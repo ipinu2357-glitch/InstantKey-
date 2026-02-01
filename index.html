@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InstantKey</title>
+  <link rel="stylesheet" href="./style.css" />
+  <meta name="color-scheme" content="light dark" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="./logo.png" alt="InstantKey Logo" class="logo-img" />
+      <div class="brand-text">
+        <div class="title">InstantKey</div>
+        <div class="subtitle">Platform aman untuk menyimpan semua password</div>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <div id="autolockTimer" class="autolock-timer hidden">
+        🔒 Auto-lock <span id="timerText">--:--</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="appRoot">
+
+    <!-- VAULT -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Buka / Buat Vault</h2>
+        <p class="muted">Multi-user • terenkripsi • lokal (tanpa server)</p>
+      </div>
+
+      <div class="grid grid-6">
+        <div class="field span-2">
+          <label>Akun Vault</label>
+          <div class="input-row">
+            <select id="vaultSelect"></select>
+            <button class="icon-btn" id="newVaultBtn" type="button" title="Tambah akun vault">＋</button>
+          </div>
+          <div class="hint muted">Pisahkan data (Pribadi/Kerja/dll).</div>
+        </div>
+
+        <div class="field span-2">
+          <label>Master Password</label>
+          <div class="input-row">
+            <input id="master" type="password" placeholder="Masukkan master password" />
+            <button class="icon-btn" id="toggleMaster" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="field span-2" id="k2LabelWrap">
+          <label>Nama Kunci Kedua</label>
+          <input id="k2Label" placeholder="Mis: PIN Rahasia / Nama Ibu / Plat Motor" />
+          <div class="hint muted">Nama ini hanya label, bukan nilai kuncinya.</div>
+        </div>
+
+        <div class="field span-2">
+          <label id="k2ValueLabel">Kunci Kedua</label>
+          <div class="input-row">
+            <input id="k2Value" type="password" placeholder="Masukkan kunci kedua" />
+            <button class="icon-btn" id="toggleK2" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="actions span-2">
+          <button class="btn primary" id="unlockBtn" type="button">Unlock / Create</button>
+          <button class="btn" id="lockBtn" type="button" disabled>Lock</button>
+        </div>
+
+        <div class="actions span-2">
+          <button class="btn" id="exportBtn" type="button" disabled>Export</button>
+          <button class="btn" id="importBtn" type="button" disabled>Import</button>
+        </div>
+
+        <div class="field span-4">
+          <label>Status</label>
+          <div id="status" class="status">Terkunci.</div>
+        </div>
+
+        <div class="field span-2">
+          <label>Auto-lock (menit)</label>
+          <input id="idleMinutes" type="number" min="1" value="5" />
+        </div>
+      </div>
+
+      <div id="warn" class="warn"></div>
+    </section>
+
+    <!-- FORM LOGIN -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Amankan akun Anda🔐</h2>
+        <p class="muted">Data terenkripsi & tersimpan di browser kamu</p>
+      </div>
+
+      <div class="grid grid-6">
+        <div class="field span-2">
+          <label>Label</label>
+          <div class="input-row">
+            <!-- default hide -->
+            <input id="label" type="password" autocomplete="off" placeholder="Mis: Gmail pribadi" />
+            <button class="icon-btn" id="toggleLabel" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="field span-2">
+          <label>Website</label>
+          <div class="input-row">
+            <!-- default hide -->
+            <input id="site" type="password" autocomplete="off" placeholder="https://example.com" />
+            <button class="icon-btn" id="toggleSite" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="field span-1">
+          <label>Username</label>
+          <div class="input-row">
+            <!-- default hide -->
+            <input id="user" type="password" autocomplete="off" placeholder="email/username" />
+            <button class="icon-btn" id="toggleUser" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="field span-1">
+          <label>Password</label>
+          <div class="input-row">
+            <!-- default hide -->
+            <input id="pass" type="password" autocomplete="new-password" placeholder="password" />
+            <button class="icon-btn" id="togglePass" type="button" title="Reveal/Hide">👁</button>
+          </div>
+        </div>
+
+        <div class="actions span-2">
+          <button class="btn" id="genBtn" type="button">Generate</button>
+          <button class="btn primary" id="addBtn" type="button" disabled>Tambah</button>
+        </div>
+      </div>
+
+      <div class="login-note">
+        Catatan: jika <b>Label</b>, <b>Website</b>, <b>Username</b>, atau <b>Password</b> tidak ingin diisi,
+        cukup isi dengan tanda <b>-</b>.
+      </div>
+    </section>
+
+    <!-- LIST -->
+    <section class="panel">
+      <div class="panel-head row-between">
+        <div>
+          <h2>Daftar</h2>
+          <p class="muted">Tekan 👁 untuk melihat, otomatis tersembunyi lagi (2.5 detik)</p>
+        </div>
+
+        <div class="field search">
+          <label>Search</label>
+          <input id="search" placeholder="Cari label / site / username..." />
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Label</th>
+              <th>Website</th>
+              <th>Username</th>
+              <th>Password</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="footer-note muted">
+        Backup: gunakan <b>Export</b>. File export tetap terenkripsi.
+      </div>
+    </section>
+
+  </main>
+
+  <div class="page-bottom-space"></div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
